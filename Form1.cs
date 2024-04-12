@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using System.Threading.Tasks;
-
  
-using Org.BouncyCastle.Security;
 using iTextSharp.text.pdf;
 using System.IO;
 using iTextSharp.text.pdf.security;
@@ -12,17 +9,13 @@ using System.Windows.Forms;
 using System.Linq;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Security.Cryptography.X509Certificates;
+ 
+ 
+  
+using itext.pdfimage.Extensions;
 using Org.BouncyCastle.X509;
-using X509Certificate = Org.BouncyCastle.X509.X509Certificate;
-using System.Runtime.ConstrainedExecution;
-using Org.BouncyCastle.Crypto.Tls;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using Org.BouncyCastle.Ocsp;
-using static System.Windows.Forms.AxHost;
-
-
+using System.Security.Cryptography.X509Certificates;
+ 
 
 
 
@@ -30,7 +23,7 @@ namespace SiginBS
 {
     public partial class Form1 : Form
     {
-        public static IList<X509Certificate> chain = new List<X509Certificate>();
+        public static IList<Org.BouncyCastle.X509.X509Certificate> chain = new List<Org.BouncyCastle.X509.X509Certificate>();
         public static X509Certificate2 pk;
         private const string keyGetCompany = "CN=";
         private static IOcspClient ocspClient;
@@ -38,12 +31,47 @@ namespace SiginBS
         private static IList<ICrlClient> crlList;
         private static readonly string fullPathAppOfCurrentUser = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         private string templatepdfFile = "temple.pdf";
-
+        private pdfMergefiles pdfMergefiles= new pdfMergefiles();
         public Form1()
         {
             InitializeComponent();
         }
+        private void button3_Click(object sender, EventArgs e)
+        {
+            var pdf = File.Open(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "HD_1C23TSN_120_1712826810.pdf"), FileMode.Open);
 
+            var reader = new iText.Kernel.Pdf.PdfReader(pdf);
+            var pdfDocument = new iText.Kernel.Pdf.PdfDocument(reader);
+            var bitmaps = pdfDocument.ConvertToBitmaps();
+
+            foreach (var bitmap in bitmaps)
+            {
+                bitmap.Save(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"wave-{DateTime.Now.Ticks}.png"), ImageFormat.Png);
+                bitmap.Dispose();
+            }
+
+            var page1 = pdfDocument.GetPage(1);
+            var bitmap1 = page1.ConvertPageToBitmap();
+            bitmap1.Save(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"wave-page1-{DateTime.Now.Ticks}.png"), ImageFormat.Png);
+            bitmap1.Dispose();
+
+        }
+        void convertPdftoPNG(string src, string des)
+        {
+            var pdf = File.Open(src, FileMode.Open);
+
+            var reader = new iText.Kernel.Pdf.PdfReader(pdf);
+            var pdfDocument = new iText.Kernel.Pdf.PdfDocument(reader);
+            var bitmaps = pdfDocument.ConvertToBitmaps();
+
+            foreach (var bitmap in bitmaps)
+            {
+                bitmap.Save(des, ImageFormat.Png);
+                bitmap.Dispose();
+            }
+
+
+        }
         private void Form1_Load(object sender, EventArgs e)
         {
 
@@ -132,7 +160,7 @@ namespace SiginBS
 
              
 
-            using (PdfReader pdfReader = new PdfReader(fileToSign))
+            using (iTextSharp.text.pdf.PdfReader pdfReader = new iTextSharp.text.pdf.PdfReader(fileToSign))
             {
                 int pages = pdfReader.NumberOfPages;
                 var currentSignaturesCount = pdfReader.AcroFields.GetSignatureNames().Count();
@@ -232,18 +260,12 @@ namespace SiginBS
                         signatureAppearance.SetVisibleSignature(new iTextSharp.text.Rectangle(x, y, x + w, y + h), page, "signature");
 
 
-                  //  net-sign: "772be5e76efb47c69e3c79e24dac526d",71239
-
-                        //Also tried like this:
-                        //signatureAppearance.CertificationLevel = currentSignaturesCount == 0 ? PdfSignatureAppearance.CERTIFIED_FORM_FILLING_AND_ANNOTATIONS : PdfSignatureAppearance.NOT_CERTIFIED;
-                        // with message: "There have been changes made to this document that invalidate the signature"
-
-                        // sign document
+             
                         try
                         {
                             X509Certificate2 cert = pk;
                             X509CertificateParser cp = new X509CertificateParser();
-                            X509Certificate[] chain = new  X509Certificate[]
+                            Org.BouncyCastle.X509.X509Certificate[] chain = new  Org.BouncyCastle.X509.X509Certificate[]
                            {
                                cp.ReadCertificate(pk.RawData) 
                            };
@@ -254,8 +276,7 @@ namespace SiginBS
 
 
                             IExternalSignature externalSignature = new X509Certificate2Signature(pk, "SHA-256");
-                            MakeSignature.SignDetached(signatureAppearance, externalSignature,
-                                chain
+                            MakeSignature.SignDetached(signatureAppearance, externalSignature,chain
                                 , null, null, null, 0, CryptoStandard.CMS);
                         }
                         catch (Exception ex)
@@ -292,12 +313,67 @@ namespace SiginBS
             theDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             if (theDialog.ShowDialog() == DialogResult.OK)
             {
-                templatepdfFile = theDialog.FileName;
+                txtFile.Text = templatepdfFile = theDialog.FileName;
+                try
+                {
 
-                SignFile(templatepdfFile, "", int.Parse(textBox3.Text), int.Parse(textBox4.Text), float.Parse(textBox1.Text),
-                float.Parse(textBox2.Text)
-                , 1);
+                   // SignFile(templatepdfFile, "", int.Parse(textBox3.Text), int.Parse(textBox4.Text), float.Parse(textBox1.Text),
+                //    float.Parse(textBox2.Text)
+               //     , 1);
+                }
+                catch
+                {
+                    Console.WriteLine("Ko ky");
+                }
+               
+
             }
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            tachfile();
+
+
+        }
+        private void tachfile()
+        {
+          string  currentForlder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Constants.FolderRoot);
+
+            UploadFileCommon uploadFileCommon = new UploadFileCommon();
+
+            uploadFileCommon.CreateMultiplePath(Path.Combine(currentForlder, "Fileprocessing"));
+
+            string pdfFilePath = txtFile.Text;
+            if (!File.Exists(pdfFilePath))
+                return;
+
+            // @"C:\temp\";
+            string outputPath = Path.Combine(currentForlder, "Fileprocessing");
+            int interval = 1;
+            int pageNameSuffix = 0;
+            iTextSharp.text.pdf.PdfReader reader = new iTextSharp.text.pdf.PdfReader(pdfFilePath);
+            FileInfo file = new FileInfo(pdfFilePath);
+            string pdfFileName = file.Name.Substring(0, file.Name.LastIndexOf(".")) + "-";
+
+            for (int pageNumber = 1; pageNumber <= reader.NumberOfPages; pageNumber += interval)
+            {
+                pageNameSuffix++;
+                string newPdfFileName = string.Format(pdfFileName + "{0}", pageNameSuffix.ToString().PadLeft(5, '0'));
+                //if (txtName.Text!= "")
+                // newPdfFileName = string.Format(txtName.Text  + "-{0}", pageNameSuffix);                
+                Console.WriteLine($"Dang cat file 1 trang 1 file: {outputPath}\\{newPdfFileName}.pdf");
+
+                pdfMergefiles.SplitAndSaveInterval(pdfFilePath, outputPath, pageNumber, interval, newPdfFileName);
+                //Path.Combine(outputPath, pdfFileName + ".pdf")
+
+                convertPdftoPNG(Path.Combine(outputPath, newPdfFileName + ".pdf"), Path.Combine(outputPath, newPdfFileName + ".png"));
+
+
+
+            }
+        }
+
+       
     }
 }
