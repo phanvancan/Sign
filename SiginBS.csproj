@@ -45,42 +45,6 @@
     <Reference Include="Common.Logging.Core, Version=3.4.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
       <HintPath>..\..\..\..\bk\gtel\V01Ocr\packages\Common.Logging.Core.3.4.1\lib\net40\Common.Logging.Core.dll</HintPath>
     </Reference>
-    <Reference Include="itext.barcodes, Version=7.1.19.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\ccanpv\.nuget\packages\itext7\7.1.9\lib\net40\itext.barcodes.dll</HintPath>
-    </Reference>
-    <Reference Include="itext.forms, Version=7.1.19.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\ccanpv\.nuget\packages\itext7\7.1.9\lib\net40\itext.forms.dll</HintPath>
-    </Reference>
-    <Reference Include="itext.io, Version=7.1.19.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\ccanpv\.nuget\packages\itext7\7.1.9\lib\net40\itext.io.dll</HintPath>
-    </Reference>
-    <Reference Include="itext.kernel, Version=7.1.19.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\ccanpv\.nuget\packages\itext7\7.1.9\lib\net40\itext.kernel.dll</HintPath>
-    </Reference>
-    <Reference Include="itext.layout, Version=7.1.19.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\ccanpv\.nuget\packages\itext7\7.1.9\lib\net40\itext.layout.dll</HintPath>
-    </Reference>
-    <Reference Include="itext.pdfa, Version=7.1.19.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\ccanpv\.nuget\packages\itext7\7.1.9\lib\net40\itext.pdfa.dll</HintPath>
-    </Reference>
-    <Reference Include="itext.sign, Version=7.1.19.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\ccanpv\.nuget\packages\itext7\7.1.9\lib\net40\itext.sign.dll</HintPath>
-    </Reference>
-    <Reference Include="itext.styledxmlparser, Version=7.1.19.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\ccanpv\.nuget\packages\itext7\7.1.9\lib\net40\itext.styledxmlparser.dll</HintPath>
-    </Reference>
-    <Reference Include="itext.svg, Version=7.1.19.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\ccanpv\.nuget\packages\itext7\7.1.9\lib\net40\itext.svg.dll</HintPath>
-    </Reference>
     <Reference Include="itextsharp, Version=5.5.12.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>..\packages\iTextSharp.5.5.12\lib\itextsharp.dll</HintPath>
     </Reference>
@@ -149,6 +113,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\Thumbnails.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="FilePro.cs" />
     <Compile Include="Form1.cs">
@@ -157,6 +122,7 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\filelist.cs" />
     <Compile Include="pdfMergefiles.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -176,7 +142,7 @@
     <None Include="filekey.p12">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="packages.config" />
+    <None Include="packages.config.bak" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -199,9 +165,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\itext.pdfimage\itext.pdfimage.csproj">
-      <Project>{680eb58b-1dfc-400a-8df5-ae009761ce3c}</Project>
-      <Name>itext.pdfimage</Name>
+    <ProjectReference Include="..\iTextPDFImages\iTextPDFImages.csproj">
+      <Project>{cd519287-dad5-4081-94a8-530f00330c9a}</Project>
+      <Name>iTextPDFImages</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
