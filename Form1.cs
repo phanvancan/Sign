@@ -15,10 +15,10 @@ using System.Drawing.Imaging;
  
  
   
-using itext.pdfimage.Extensions;
+
 using Org.BouncyCastle.X509;
 using System.Security.Cryptography.X509Certificates;
-using itext.pdfimage;
+
 using System.Drawing.Drawing2D;
 using System.Net;
 using System.Web.UI.WebControls;
@@ -28,10 +28,17 @@ using SiginBS.Common;
 using System.Diagnostics;
 using SiginBS.Properties;
 using SiginBS.Models;
-using com.itextpdf.text.pdf;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Pkcs;
+using static System.Net.Mime.MediaTypeNames;
+using itext.pdfimage;
+//using com.itextpdf.text.pdf;
 
 
+//using iTextSharp.text.pdf.parser;
+//using Org.BouncyCastle.Crypto;
+//using iText.Kernel.Pdf;
+//using iText.Signatures;
 
 
 namespace SiginBS
@@ -40,12 +47,13 @@ namespace SiginBS
     {
         public static IList<Org.BouncyCastle.X509.X509Certificate> chain = new List<Org.BouncyCastle.X509.X509Certificate>();
         public static X509Certificate2 pk;
-        private const string keyGetCompany = "CN=";
-        private static IOcspClient ocspClient;
-        private static ITSAClient tsaClient;
-        private static IList<ICrlClient> crlList;
-        private static readonly string fullPathAppOfCurrentUser = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        private string templatepdfFile = "temple.pdf";
+      //  private const string keyGetCompany = "CN=";
+       // private static IOcspClient ocspClient;
+        //private static ITSAClient tsaClient;
+       // private static IList<ICrlClient> crlList;
+       // private static readonly string fullPathAppOfCurrentUser = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+       // private string templatepdfFile = "temple.pdf";
+
         private pdfMergefiles pdfMergefiles= new pdfMergefiles();
         private UploadFileCommon uploadFileCommon = new UploadFileCommon();
         private string imagePath = "";
@@ -55,7 +63,7 @@ namespace SiginBS
         private Point SaveStartPoint, SaveEndPoint;
         PictureBox picCanvas = new PictureBox();
         List<fileIndex> lstindex = new List<fileIndex>();
-        
+        private bool openSignOk = false;
         public Form1()
         {
             InitializeComponent();
@@ -81,25 +89,28 @@ namespace SiginBS
 
         private void button3_Click(object sender, EventArgs e)
         {
+           // picCanvas.Load(@"C:\Users\ccanpv\AppData\Roaming\SignOffice\1.jpg");
             LoadfileImg(txtFile.Text);
 
 
         }
         private void LoadfileImg(string filename)
         {
+            //if (picCanvas!= null) picCanvas.Dispose();
             Thumbnails thumbnails = new Thumbnails();
-            var pdf = filename; 
+            var pdf = filename;
 
             PdfToImageConverter cvimg = new PdfToImageConverter();
 
             var img = cvimg.ConvertToImages(pdf.ToString());
 
+            System.Windows.Forms.Application.DoEvents();
 
 
+            var pathtemp = uploadFileCommon.CreateMultiplePath(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Constants.FolderRoot));
+            pathtemp = uploadFileCommon.CreateMultiplePath(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Constants.FolderRoot));
 
-            var pathtemp = uploadFileCommon.CreateMultiplePath(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Constants.FolderRoot));
-
-            imagePath = Path.Combine(pathtemp, $"img-{DateTime.Now.Ticks}.jpg");
+            imagePath = System.IO.Path.Combine(pathtemp, $"img-{DateTime.Now.Ticks}.jpg");
 
 
 
@@ -108,26 +119,45 @@ namespace SiginBS
             {
                 System.GC.Collect();
                 System.GC.WaitForPendingFinalizers();
-                System.IO.DirectoryInfo directory = new System.IO.DirectoryInfo(Path.Combine(pathtemp, "thumb120"));
+                System.IO.DirectoryInfo directory = new System.IO.DirectoryInfo(System.IO.Path.Combine(pathtemp, "thumb120"));
                 Empty(directory);
             }
             catch { }
 
             #endregion xoa file anh 120
+            // System.IO.DirectoryInfo dir1 = new System.IO.DirectoryInfo(pathtemp);
+            var dirdel = Directory.GetFiles(pathtemp, "*.*", SearchOption.AllDirectories)
+         .Where(s => s.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
+                     s.EndsWith(".gif", StringComparison.OrdinalIgnoreCase) ||
+                     s.EndsWith(".png", StringComparison.OrdinalIgnoreCase));
+
+            foreach (var file in dirdel)
+            {try
+                {
+                    System.GC.Collect();
+                    System.GC.WaitForPendingFinalizers();
+                    File.Delete(file);
+                }
+                catch ( Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
 
             int i = 1;
             foreach (var image in img)
             {
-                imagePath = Path.Combine(pathtemp, $"img-{i}-{DateTime.Now.Ticks}.jpg");
-                image.Save(imagePath, ImageFormat.Jpeg);              
+                imagePath = System.IO.Path.Combine(pathtemp, $"img-{i}-{DateTime.Now.Ticks}.jpg");
+                System.Windows.Forms.Application.DoEvents();
+                image.Save(imagePath, ImageFormat.Jpeg);
 
                 image.Dispose();
                 thumbnails.GeneralThumb(imagePath, "thumb120", 120, 0);
-                var rt = thumbnails.GeneralThumb(imagePath, "thumb", 842, 0);
+                thumbnails.GeneralThumb(imagePath, "thumb", 842, 0);
                 i++;
             }
 
-          
+
 
             //if (rt!= "error")
             //{
@@ -135,17 +165,17 @@ namespace SiginBS
             //}
             ImageList image2 = new ImageList();
             lstindex = new List<fileIndex>();
-            DirectoryInfo dir = new DirectoryInfo(Path.Combine(pathtemp, "thumb120"));
-            i=1;
+            DirectoryInfo dir = new DirectoryInfo(System.IO.Path.Combine(pathtemp, "thumb120"));
+            i = 1;
             foreach (FileInfo file in dir.GetFiles())
             {
                 try
                 {
-                   
+
 
                     image2.Images.Add(System.Drawing.Image.FromFile(file.FullName));
 
-                    string result = Path.GetFileName(file.FullName);
+                    string result = System.IO.Path.GetFileName(file.FullName);
                     lstindex.Add(new fileIndex { index = i, filename = result });
                     i++;
                     Console.WriteLine(file.FullName);
@@ -155,9 +185,10 @@ namespace SiginBS
                     Console.WriteLine("This is not an image file");
                 }
             }
+            this.listView1.Items.Clear();
 
             this.listView1.View = System.Windows.Forms.View.LargeIcon;
-            image2.ImageSize = new Size(120,169);
+            image2.ImageSize = new Size(120, 169);
 
             this.listView1.LargeImageList = image2;
 
@@ -165,7 +196,7 @@ namespace SiginBS
             foreach (var r in lstindex)
             {
                 ListViewItem item = new ListViewItem();
-                item.ImageIndex = r.index;
+                item.ImageIndex = r.index - 1;
                 item.Text = $"{r.index}";
                 this.listView1.Items.Add(item);
             }
@@ -174,8 +205,8 @@ namespace SiginBS
 
             //  Panel MyPanel = new Panel();
             //PictureBox picCanvas = new PictureBox();
-            imagePath =Path.Combine(imagePath, "thumb", lstindex.FirstOrDefault().filename);
-            
+            imagePath = System.IO.Path.Combine(pathtemp, "thumb", lstindex.FirstOrDefault().filename);
+
             System.Drawing.Image image1 = System.Drawing.Image.FromFile(imagePath);
 
             picCanvas.Image = image1;
@@ -203,6 +234,8 @@ namespace SiginBS
             //Add the width and height to the picture box dimensions
             picCanvas.Width += widthZoom;
             picCanvas.Height += heightZoom;
+            //image1.Dispose();
+
         }
     
         private void Form1_Load(object sender, EventArgs e)
@@ -210,11 +243,10 @@ namespace SiginBS
 
 
 
-            imagePath = @"D:\temp\imresizer-1713165935821.png";
-          picCanvas.Load(imagePath);
+            //  imagePath = @"D:\temp\imresizer-1713165935821.png";
+            //picCanvas.Load(imagePath);
 
-            string pfxFilePath = @"C08-Cert.pfx";
-            string pfxPassword = "Hanoi1";
+            txtFile.Text = @"C:\Users\ccanpv\AppData\Roaming\SignOffice\lab01.pdf";
             // Org.BouncyCastle.Pkcs.Pkcs12Store pfxKeyStore = new Org.BouncyCastle.Pkcs.Pkcs12Store(new FileStream(pfxFilePath, FileMode.Open, FileAccess.Read), pfxPassword.ToCharArray());
 
 
@@ -225,75 +257,134 @@ namespace SiginBS
             
             textBox1.Text = "120";
             textBox2.Text = "120";
-            int page = 1;
+            //int page = 1;
+           // string pfxFilePath = @"C08-Cert.pfx";
+          //  string pfxPassword = "Hanoi1";
+          //  X509Certificate2 cert = new X509Certificate2(pfxFilePath, pfxPassword, X509KeyStorageFlags.UserKeySet);
 
-            X509Certificate2 cert = new X509Certificate2(pfxFilePath, pfxPassword, X509KeyStorageFlags.UserKeySet);
-            
-           
+
             //pk = cert;
+            //MessageBox.Show("Looix");
 
 
-            X509Store x509Store = new X509Store(StoreLocation.CurrentUser);
-            x509Store.Open(OpenFlags.ReadOnly);
-            X509Certificate2Collection collection = (X509Certificate2Collection)x509Store.Certificates;
-            X509Certificate2Collection fcollection = (X509Certificate2Collection)collection.Find(X509FindType.FindByTimeValid, DateTime.Now, false);
-            X509Certificate2Collection scollection = X509Certificate2UI.SelectFromCollection(fcollection, "Chọn thiết bị xác thực ", "Chọn một chứng chỉ từ danh sách dưới đây để nhận thông tin về chứng chỉ đó", X509SelectionFlag.MultiSelection);
-            if (scollection.Count > 0)
-            {
-                pk = scollection[0];
-
-            }
-            else
-            {
-                MessageBox.Show("Looix");
-            }
-            //byte[] certData = pk.Export(X509ContentType.Pfx, "Hanoi1");
-            // File.WriteAllBytes(@"C08-Cert.pfx", certData);
-
-            X509Chain ch = new X509Chain();
-            ch.ChainPolicy.RevocationMode = X509RevocationMode.Online;
-            ch.Build(pk);
-            Console.WriteLine("Chain Information");
-            Console.WriteLine("Chain revocation flag: {0}", ch.ChainPolicy.RevocationFlag);
-            Console.WriteLine("Chain revocation mode: {0}", ch.ChainPolicy.RevocationMode);
-            Console.WriteLine("Chain verification flag: {0}", ch.ChainPolicy.VerificationFlags);
-            Console.WriteLine("Chain verification time: {0}", ch.ChainPolicy.VerificationTime);
-            Console.WriteLine("Chain status length: {0}", ch.ChainStatus.Length);
-            Console.WriteLine("Chain application policy count: {0}", ch.ChainPolicy.ApplicationPolicy.Count);
-            Console.WriteLine("Chain certificate policy count: {0} {1}", ch.ChainPolicy.CertificatePolicy.Count, Environment.NewLine);
-
-            //Output chain element information.
-            Console.WriteLine("Chain Element Information");
-            Console.WriteLine("Number of chain elements: {0}", ch.ChainElements.Count);
-            Console.WriteLine("Chain elements synchronized? {0} {1}", ch.ChainElements.IsSynchronized, Environment.NewLine);
-            foreach (X509ChainElement element in ch.ChainElements)
-            {
-                Console.WriteLine("Element issuer name: {0}", element.Certificate.Issuer);
-                Console.WriteLine("Element certificate valid until: {0}", element.Certificate.NotAfter);
-                Console.WriteLine("Element certificate is valid: {0}", element.Certificate.Verify());
-                Console.WriteLine("Element error status length: {0}", element.ChainElementStatus.Length);
-                Console.WriteLine("Element information: {0}", element.Information);
-                Console.WriteLine("Number of element extensions: {0}{1}", element.Certificate.Extensions.Count, Environment.NewLine);
-
-                if (ch.ChainStatus.Length > 1)
-                {
-                    for (int index = 0; index < element.ChainElementStatus.Length; index++)
-                    {
-                        Console.WriteLine(element.ChainElementStatus[index].Status);
-                        Console.WriteLine(element.ChainElementStatus[index].StatusInformation);
-                    }
-                }
-            }
-            
+           
 
         }
 
+        private string SignV2(string fileToSign, string filedesc, string certname, int w,
+           int h, float llx, float lly, int page1, string filenameChuKy = @"img.png", bool onepage = true)
 
-
-        private string SignFile(string fileToSign, string filedesc, string certname, int w, int h, float llx, float lly, int page)
         {
-            string signedFile =  Path.GetFileName(filedesc).Replace(".pdf", $"{DateTime.Now.ToString("yyyy-MM-dd-hhmmss")}.signed.pdf");
-            signedFile = Path.Combine(Path.GetDirectoryName(filedesc), signedFile);
+            // Step 2: Load PDF Document
+            string pdfFilePath = fileToSign;
+            string destinationPath = filedesc;
+            PdfReader pdfReader = new PdfReader(pdfFilePath);
+
+        
+            // Step 4: Count the pages and add signature in each page
+            int page = pdfReader.NumberOfPages;
+            for (int i = 1; i <= page; i++)
+            {
+                if (i > 1)
+                {
+                    FileStream stremfile = new FileStream(destinationPath, FileMode.Open, FileAccess.Read);
+                    pdfReader = new PdfReader(stremfile);
+                    File.Delete(destinationPath);
+                }
+
+                // Step 4.1: Initialize the PDF Stamper And Creating the Signature Appearance
+                FileStream signedPdf = new FileStream(destinationPath, FileMode.Create, FileAccess.ReadWrite);
+                PdfStamper pdfStamper = PdfStamper.CreateSignature(pdfReader, signedPdf, '\0', null, true);
+                PdfSignatureAppearance signatureAppearance = pdfStamper.SignatureAppearance;
+                float x = 360;
+                float y = 130;
+
+                var pdfContentByte = pdfStamper.GetOverContent(i);
+
+                var pageSize = pdfReader.GetPageSize(i);
+              //  float pageWidth = pageSize.Width;//162
+              //  float pageHeight = pageSize.Height;//792                                  
+
+                //float picW = picCanvas.Width;
+               // float picH = picCanvas.Height;
+                var image = iTextSharp.text.Image.GetInstance(filenameChuKy, true);
+
+
+                image.Alignment = iTextSharp.text.Image.ALIGN_CENTER;
+                image.ScaleToFit(150, 50);
+                image.SetAbsolutePosition(x, y);
+                pdfContentByte.AddImage(image);
+                
+                signatureAppearance.Reason = "Digital Signature Reason";
+                signatureAppearance.Location = "Digital Signature Location";
+                signatureAppearance.Acro6Layers = false;
+
+                
+               
+                signatureAppearance.Acro6Layers = false;
+                signatureAppearance.Layer4Text = PdfSignatureAppearance.questionMark;
+                signatureAppearance.SetVisibleSignature(new iTextSharp.text.Rectangle(x, y, x + 150, y + 50), i, null);
+
+ 
+                
+                X509CertificateParser cp = new X509CertificateParser();
+
+                Org.BouncyCastle.X509.X509Certificate[] chain = new Org.BouncyCastle.X509.X509Certificate[]
+                         {
+                               cp.ReadCertificate(pk.RawData)
+                         };
+                iTextSharp.text.pdf.security.IExternalSignature privateKey = new X509Certificate2Signature(pk, DigestAlgorithms.SHA256);
+               
+                
+
+                MakeSignature.SignDetached(signatureAppearance, privateKey, chain, null, null, null, 0, CryptoStandard.CMS);
+
+                
+                pdfReader.Close();
+                pdfStamper.Close();
+            }
+            Console.WriteLine("PDF signed successfully!");
+            return "";
+        }
+
+            private string SignFile(string fileToSign, string filedesc, string certname, int w, 
+            int h, float llx, float lly, int page, string filenameChuKy = @"img.png", bool onepage=true)
+
+        {
+            Console.WriteLine("PDF sign begin ");
+
+            string signedFile = System.IO.Path.GetFileName(filedesc).Replace(".pdf", $"{DateTime.Now.ToString("yyyy-MM-dd-hhmmss")}.signed.pdf");
+            signedFile = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(filedesc), signedFile);
+            string tempDir = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SignOffice", "tempfiles");           
+            Directory.CreateDirectory(tempDir);
+
+
+            //if (File.Exists(System.IO.Path.Combine(tempDir, System.IO.Path.GetFileName(filenameChuKy))))
+            //{
+
+            //    Console.WriteLine(System.IO.Path.Combine(tempDir, System.IO.Path.GetFileName(filenameChuKy)));
+            //}
+            //else
+            //{
+            //    System.IO.File.Copy(filenameChuKy, System.IO.Path.Combine(tempDir, System.IO.Path.GetFileName(filenameChuKy)), true);
+            //    Console.WriteLine($"copy to desc {filenameChuKy}");
+            //}
+
+            
+          var   filenameChuKyDesc = System.IO.Path.Combine(tempDir, System.IO.Path.GetFileName(filenameChuKy));
+
+            if (File.Exists(filenameChuKyDesc))
+            {
+                System.GC.Collect();
+                System.GC.WaitForPendingFinalizers();
+             //   File.Delete(filenameChuKyDesc);
+            }
+            else
+            {
+                GenerateStamp(filenameChuKy).Save(filenameChuKyDesc, ImageFormat.Png);
+            }
+
+
 
             float x =0;
             float y =0;
@@ -302,70 +393,48 @@ namespace SiginBS
             w = (int) ((float)w - ((float) w * 0.35277723881255185));
             h = (int)((float)h - ((float)h * 0.35277723881255185));
 
-
+         
 
             //float _mm2Pt = Convert.ToSingle(0.35277723881255185)
 
             using (iTextSharp.text.pdf.PdfReader pdfReader = new iTextSharp.text.pdf.PdfReader(fileToSign))
             {
+                Console.WriteLine("PDF sign begin ");
+
                 int pages = pdfReader.NumberOfPages;
                 var currentSignaturesCount = pdfReader.AcroFields.GetSignatureNames().Count();
 
-                using (FileStream signedPdf = new FileStream(signedFile, FileMode.Create, FileAccess.ReadWrite))
-                {
-                    string tempDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SignOffice", "tempfiles");
-                    Directory.CreateDirectory(tempDir);
-                    string tempFileName = Path.Combine(tempDir, Guid.NewGuid().ToString("N") + ".pdf");
+                FileStream signedPdf = new FileStream(signedFile, FileMode.Create, FileAccess.ReadWrite);
+
+
+
+                    string tempFileName = System.IO.Path.Combine(tempDir, Guid.NewGuid().ToString("N") + ".pdf");
                     if (!File.Exists(tempFileName))
                         File.Create(tempFileName).Close();
 
                     using (PdfStamper pdfStamper = PdfStamper.CreateSignature(pdfReader, signedPdf, '\0', tempFileName, true))  // Append mode
                     {
-                        for (int i = 1; i <= pages; i++)
-                        {
-                            page = i;
-                        // Add signature image
+
+
                         if (page <= pages && page > 0)
                         {
                             var pdfContentByte = pdfStamper.GetOverContent(page);
 
-                            var pageSize = pdfReader.GetPageSize(1);
+                            var pageSize = pdfReader.GetPageSize(page);
                             float pageWidth = pageSize.Width;//162
-                            float pageHeight = pageSize.Height;//792
+                            float pageHeight = pageSize.Height;//792                                  
 
-                            //img = GenerateStamp();
-                            //bitmap2.Save("myfile.png", ImageFormat.Png);
-
-                            string filename = @"img.png";
-
-                                //var img2 = GenerateStamp();
-                                //img2.Save(filename, ImageFormat.Png);
-
-                                //System.IO.FileInfo file = new System.IO.FileInfo(filename);
-                                //using (Bitmap iInfo = new Bitmap(filename))
-                                //{
-                                //   // llx = iInfo.Width;
-                                //   // lly = iInfo.Height;
-
-                                //}
-
-                                float picW = picCanvas.Width;
-                                float picH = picCanvas.Height;
-
-                                var image = iTextSharp.text.Image.GetInstance(filename, true);
-                               // x = llx;
-                               //  y = lly;
-                                
-                              //  w = 150;
-                              //  h = 50;
-
-                                _llx = (pageHeight * llx) / picH;
-                                 _lly = (pageWidth * lly) / picW;
-
-                               
+                            float picW = picCanvas.Width;
+                            float picH = picCanvas.Height;
+                           
 
 
-                                if (_llx > pageWidth)
+                            var image = iTextSharp.text.Image.GetInstance(filenameChuKyDesc, true);
+
+                            _llx = (pageHeight * llx) / picH;
+                            _lly = (pageWidth * lly) / picW;
+
+                            if (_llx > pageWidth)
                             {
                                 _llx = pageWidth - w;
                             }
@@ -383,86 +452,97 @@ namespace SiginBS
                             if (h > pageHeight)
                             {
                                 h = (int)pageHeight;
-                            }
+                            } 
 
-                                //llx = pageHeight - llx;
-                                //llx = x;
-                                //lly = pageHeight - y - ;
-
-
-                                x = _llx;
-                                float  llytemp = pageHeight - _lly -h;
-                                _lly = llytemp;
-                                y = _lly;
+                            x = _llx;
+                            float llytemp = pageHeight - _lly - h;
+                            _lly = llytemp;
+                            y = _lly;
 
                             image.Alignment = iTextSharp.text.Image.ALIGN_CENTER;
                             image.ScaleToFit(w, h);
-                            image.SetAbsolutePosition(_llx, _lly);
+                            image.SetAbsolutePosition(_llx, _lly);                           
                             pdfContentByte.AddImage(image);
-
-                            
-
-                        
-
-                            }
                         }
 
 
 
-                        PdfSignatureAppearance signatureAppearance = pdfStamper.SignatureAppearance;
 
-                        signatureAppearance.Reason ="Được ký bởi:\n" + pk.Subject.ToString();
+
+
+                        iTextSharp.text.pdf.PdfSignatureAppearance signatureAppearance = pdfStamper.SignatureAppearance;
+                        
+
+                        signatureAppearance.Reason = "Được ký bởi:\n" + pk.Subject.ToString();
                         signatureAppearance.SignDate = DateTime.Now;
-                       // signatureAppearance.SignatureRenderingMode = PdfSignatureAppearance.RenderingMode.GRAPHIC_AND_DESCRIPTION;
+                        //  signatureAppearance.SignatureRenderingMode = PdfSignatureAppearance.RenderingMode.GRAPHIC_AND_DESCRIPTION;
                         signatureAppearance.Acro6Layers = false;
-                      
 
-                   
-                         signatureAppearance.Layer4Text = PdfSignatureAppearance.questionMark;
-                          w = 150;
-                          h = 50;
+
+
+                        signatureAppearance.Layer4Text = iTextSharp.text.pdf.PdfSignatureAppearance.questionMark;
+                        w = 150;
+                        h = 50;
 
                         signatureAppearance.SetVisibleSignature(new iTextSharp.text.Rectangle(x, y, x + w, y + h), page, "signature");
 
+                       
 
-             
+
                         try
                         {
                             X509Certificate2 cert = pk;
                             X509CertificateParser cp = new X509CertificateParser();
-                            Org.BouncyCastle.X509.X509Certificate[] chain = new  Org.BouncyCastle.X509.X509Certificate[]
+                            Org.BouncyCastle.X509.X509Certificate[] chain = new Org.BouncyCastle.X509.X509Certificate[]
                            {
-                               cp.ReadCertificate(pk.RawData) 
+                               cp.ReadCertificate(pk.RawData)
                            };
-                            
+
                             //X509Chain ch = new X509Chain();
                             //ch.ChainPolicy.RevocationMode = X509RevocationMode.Online;
                             //ch.Build(cert);
 
 
-                            IExternalSignature externalSignature = new X509Certificate2Signature(pk, "SHA-256");
-                            MakeSignature.SignDetached(signatureAppearance, externalSignature,chain
+                            iTextSharp.text.pdf.security.IExternalSignature externalSignature = new X509Certificate2Signature(pk, "SHA-256");
+                            MakeSignature.SignDetached(signatureAppearance, externalSignature, chain
                                 , null, null, null, 0, CryptoStandard.CMS);
+
                         }
+                        
                         catch (Exception ex)
                         {
-                            Console.WriteLine(ex.ToString());   
+                            Console.WriteLine(ex.ToString());
+
+                        }
+                        finally
+                        {
+                            if (pdfStamper != null)
+                            {
+                                pdfStamper.Close();
+                                pdfStamper.Dispose();
+                            }
 
                         }
 
+                    if (signedPdf != null)
+                    {
+                        signedPdf.Close();
+                        signedPdf.Dispose();
                     }
+
+
                 }
             }
-
+            Console.WriteLine("PDF signed successfully!");
             return signedFile;
         }
 
      
 
-        Bitmap GenerateStamp()
+        Bitmap GenerateStamp(string urlimg)
         {
             System.Net.WebRequest request =
-           System.Net.WebRequest.Create("https://daugiabienso.bocongan.gov.vn/assets/images/header/img.png");
+           System.Net.WebRequest.Create(urlimg);
             System.Net.WebResponse response = request.GetResponse();
             System.IO.Stream responseStream =
                 response.GetResponseStream();
@@ -479,7 +559,7 @@ namespace SiginBS
             theDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             if (theDialog.ShowDialog() == DialogResult.OK)
             {
-                txtFile.Text = templatepdfFile = theDialog.FileName;
+                txtFile.Text =  theDialog.FileName;
                 try
                 {
 
@@ -494,29 +574,70 @@ namespace SiginBS
             }
         }
 
+        private void ExtractJpeg(string file1)
+        {
+            var dir1 = System.IO.Path.GetDirectoryName(file1);
+            var fn = System.IO.Path.GetFileNameWithoutExtension(file1);
+            var dir2 = System.IO.Path.Combine(dir1, fn);
+            if (!Directory.Exists(dir2)) Directory.CreateDirectory(dir2);
+
+            var pdf = new PdfReader(file1);
+            int n = pdf.NumberOfPages;
+            for (int i = 1; i <= n; i++)
+            { 
+                var pg = pdf.GetPageN(i);
+                var res = PdfReader.GetPdfObject(pg.Get(PdfName.RESOURCES)) as PdfDictionary;
+                var xobj = PdfReader.GetPdfObject(res.Get(PdfName.XOBJECT)) as PdfDictionary;
+
+              
+
+                if (xobj == null) continue;
+
+                var keys = xobj.Keys;
+                if (keys.Count == 0) continue;
+
+                var obj = xobj.Get(keys.ElementAt(0));
+                if (!obj.IsIndirect()) continue;
+
+                var tg = PdfReader.GetPdfObject(obj) as PdfDictionary;
+                var type = PdfReader.GetPdfObject(tg.Get(PdfName.SUBTYPE)) as PdfName;
+                if (!PdfName.IMAGE.Equals(type)) continue;
+
+                int XrefIndex = (obj as PRIndirectReference).Number;
+                var pdfStream = pdf.GetPdfObject(XrefIndex) as PRStream;
+                var data = PdfReader.GetStreamBytesRaw(pdfStream);
+                var jpeg = System.IO.Path.Combine(dir2, string.Format("{0:0000}.png", i));
+                File.WriteAllBytes(jpeg, data);
+            }
+        }
+
+ 
         private void button2_Click(object sender, EventArgs e)
         {
-
-
-
-           // tachfile();
+            PDFHelper pDF = new PDFHelper();
+           
+            
+            pDF.ExtractImages( txtFile.Text, "D:\\temp\\1\\1", progressBar1 );
+            progressBar1.Visible = false;
+           
 
 
         }
+
         private void tachfile()
         {
-         string currentForlder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Constants.FolderRoot);
+         string currentForlder = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Constants.FolderRoot);
 
             UploadFileCommon uploadFileCommon = new UploadFileCommon();
 
-            uploadFileCommon.CreateMultiplePath(Path.Combine(currentForlder, "Fileprocessing"));
+            uploadFileCommon.CreateMultiplePath(System.IO.Path.Combine(currentForlder, "Fileprocessing"));
 
             string pdfFilePath = txtFile.Text;
             if (!File.Exists(pdfFilePath))
                 return;
 
             // @"C:\temp\";
-            string outputPath = Path.Combine(currentForlder, "Fileprocessing");
+            string outputPath = System.IO.Path.Combine(currentForlder, "Fileprocessing");
             int interval = 1;
             int pageNameSuffix = 0;
             iTextSharp.text.pdf.PdfReader reader = new iTextSharp.text.pdf.PdfReader(pdfFilePath);
@@ -532,7 +653,7 @@ namespace SiginBS
                 Console.WriteLine($"Dang cat file 1 trang 1 file: {outputPath}\\{newPdfFileName}.pdf");
 
                 pdfMergefiles.SplitAndSaveInterval(pdfFilePath, outputPath, pageNumber, interval, newPdfFileName);
-                //Path.Combine(outputPath, pdfFileName + ".pdf")
+                //System.IO.Path.Combine(outputPath, pdfFileName + ".pdf")
 
         
 
@@ -543,8 +664,71 @@ namespace SiginBS
 
         private void button4_Click(object sender, EventArgs e)
         {
+            if (!openSignOk)
+            {
+                try
+                {
 
+                    X509Store x509Store = new X509Store(StoreLocation.CurrentUser);
+                    x509Store.Open(OpenFlags.ReadOnly);
+                    X509Certificate2Collection collection = (X509Certificate2Collection)x509Store.Certificates;
+                    X509Certificate2Collection fcollection = (X509Certificate2Collection)collection.Find(X509FindType.FindByTimeValid, DateTime.Now, false);
+                    X509Certificate2Collection scollection = X509Certificate2UI.SelectFromCollection(fcollection, "Chọn thiết bị xác thực ", "Chọn một chứng chỉ từ danh sách dưới đây để nhận thông tin về chứng chỉ đó", X509SelectionFlag.MultiSelection);
+                    if (scollection.Count > 0)
+                    {
+                        pk = scollection[0];
+                        openSignOk = true;
+                    }
+                    else
+                    {
+                        openSignOk = false;
+                        MessageBox.Show("Looix");
+                    }
+                    //byte[] certData = pk.Export(X509ContentType.Pfx, "Hanoi1");
+                    // File.WriteAllBytes(@"C08-Cert.pfx", certData);
 
+                    X509Chain ch = new X509Chain();
+                    ch.ChainPolicy.RevocationMode = X509RevocationMode.Online;
+                    ch.Build(pk);
+                    Console.WriteLine("Chain Information");
+                    Console.WriteLine("Chain revocation flag: {0}", ch.ChainPolicy.RevocationFlag);
+                    Console.WriteLine("Chain revocation mode: {0}", ch.ChainPolicy.RevocationMode);
+                    Console.WriteLine("Chain verification flag: {0}", ch.ChainPolicy.VerificationFlags);
+                    Console.WriteLine("Chain verification time: {0}", ch.ChainPolicy.VerificationTime);
+                    Console.WriteLine("Chain status length: {0}", ch.ChainStatus.Length);
+                    Console.WriteLine("Chain application policy count: {0}", ch.ChainPolicy.ApplicationPolicy.Count);
+                    Console.WriteLine("Chain certificate policy count: {0} {1}", ch.ChainPolicy.CertificatePolicy.Count, Environment.NewLine);
+
+                    //Output chain element information.
+                    Console.WriteLine("Chain Element Information");
+                    Console.WriteLine("Number of chain elements: {0}", ch.ChainElements.Count);
+                    Console.WriteLine("Chain elements synchronized? {0} {1}", ch.ChainElements.IsSynchronized, Environment.NewLine);
+                    foreach (X509ChainElement element in ch.ChainElements)
+                    {
+                        Console.WriteLine("Element issuer name: {0}", element.Certificate.Issuer);
+                        Console.WriteLine("Element certificate valid until: {0}", element.Certificate.NotAfter);
+                        Console.WriteLine("Element certificate is valid: {0}", element.Certificate.Verify());
+                        Console.WriteLine("Element error status length: {0}", element.ChainElementStatus.Length);
+                        Console.WriteLine("Element information: {0}", element.Information);
+                        Console.WriteLine("Number of element extensions: {0}{1}", element.Certificate.Extensions.Count, Environment.NewLine);
+
+                        if (ch.ChainStatus.Length > 1)
+                        {
+                            for (int index = 0; index < element.ChainElementStatus.Length; index++)
+                            {
+                                Console.WriteLine(element.ChainElementStatus[index].Status);
+                                Console.WriteLine(element.ChainElementStatus[index].StatusInformation);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    openSignOk = false;
+                    MessageBox.Show(ex.Message);
+
+                }
+            }
             //llx = x;
             //lly = page.Rect.Height - y - height;
             //urx = x + width;
@@ -574,29 +758,36 @@ namespace SiginBS
             //lly =  pHeight - (w / _mm2Pt) - (h / _mm2Pt);
              llx = int.Parse (textBox1.Text);
              lly = int.Parse(textBox2.Text);
-            string currentForlder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Constants.FolderRoot);
+            string currentForlder = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Constants.FolderRoot);
 
             UploadFileCommon uploadFileCommon = new UploadFileCommon();
-            //Path.Combine(currentForlder, "Fileprocessing"
-            var pathtemp = uploadFileCommon.CreateMultiplePath(Path.Combine(currentForlder, "Fileprocessing"));
+            //System.IO.Path.Combine(currentForlder, "Fileprocessing"
+            var pathtemp = uploadFileCommon.CreateMultiplePath(System.IO.Path.Combine(currentForlder, "Fileprocessing"));
 
 
-            string filedesc =Path.Combine(pathtemp, Path.GetFileName(txtFile.Text));
+            string filedesc =System.IO.Path.Combine(pathtemp, System.IO.Path.GetFileName(txtFile.Text));
 
-             var fileSign = SignFile(txtFile.Text, filedesc, "", w,h,llx,lly, 1);
+            int page = 1;
+            if (listView1.Tag!=null)  int.TryParse(listView1.Tag.ToString(), out  page);
+            //SignV2
+            var fileSign = SignFile(txtFile.Text, filedesc, "", w, h, llx, lly, page, "https://api.hoguomopera.vn/img.png", checkBox1.Checked);
+           // var fileSign = SignV2(txtFile.Text, filedesc, "", w, h, llx, lly, page, "img.png", checkBox1.Checked);
+
             button5.Tag = fileSign;
-
+            
             LoadfileImg(fileSign);
+            
+                
 
 
         }
 
         void vehinh()
         {
-            string currentForlder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Constants.FolderRoot);
+            string currentForlder = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Constants.FolderRoot);
 
 
-            System.Drawing.Image image = System.Drawing.Image.FromFile(Path.Combine(currentForlder, "thumb", imagePath));
+            System.Drawing.Image image = System.Drawing.Image.FromFile(System.IO.Path.Combine(currentForlder, "thumb", imagePath));
 
 
             textBox5.Text= image.Width.ToString();
@@ -709,9 +900,9 @@ namespace SiginBS
 
         private void button6_Click(object sender, EventArgs e)
         {
-            var pathtemp = uploadFileCommon.CreateMultiplePath(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Constants.FolderRoot));
-
-
+            var pathtemp = uploadFileCommon.CreateMultiplePath(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Constants.FolderRoot, "tempfiles"
+));
+        
             try
             {
                 System.GC.Collect();
@@ -727,6 +918,30 @@ namespace SiginBS
             {
                 Console.WriteLine($"Delete file {ex.Message}");
             }
+
+
+            pathtemp = uploadFileCommon.CreateMultiplePath(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Constants.FolderRoot ));
+
+            try
+            {
+                System.GC.Collect();
+                System.GC.WaitForPendingFinalizers();
+
+                System.IO.DirectoryInfo directory = new System.IO.DirectoryInfo(pathtemp);
+
+                foreach (System.IO.FileInfo file in directory.GetFiles())
+                {
+                    file.Delete();
+                }
+
+
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Delete file {ex.Message}");
+            }
+
         }
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
@@ -739,15 +954,21 @@ namespace SiginBS
             
             if (intselectedindex >= 0)
             {
-                String text = listView1.Items[intselectedindex].Text;
-                 Console.WriteLine(text);
+                string text = listView1.Items[intselectedindex].Text;
+               //  Console.WriteLine(text);
                 
                 imagePath = lstindex.Where(x=>x.index==int.Parse(text)).FirstOrDefault().filename;
-                string currentForlder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Constants.FolderRoot);
+                listView1.Tag = text;
+                string currentForlder = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Constants.FolderRoot);
 
+                string filename = System.IO.Path.Combine(currentForlder, "thumb", imagePath);
 
-
-                System.Drawing.Image image1 = System.Drawing.Image.FromFile(Path.Combine(currentForlder , "thumb", imagePath));
+                if (!File.Exists(filename))
+                {
+                    picCanvas.Image = null;
+                    return;
+                }
+                System.Drawing.Image image1 = System.Drawing.Image.FromFile(filename);
 
                 picCanvas.Image = image1;
                 picCanvas.Height = image1.Height;
@@ -782,6 +1003,30 @@ namespace SiginBS
 
 
 
+        }
+
+        private void progressBar1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtFile_TextChanged(object sender, EventArgs e)
+        {
+            //string tempDir = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SignOffice", "tempfiles");
+            //Directory.CreateDirectory(tempDir);
+
+            //string filenameChuKy = "img.png";
+            //if (File.Exists(System.IO.Path.Combine(tempDir, System.IO.Path.GetFileName(filenameChuKy))))
+            //{
+
+            //    Console.WriteLine(System.IO.Path.Combine(tempDir, System.IO.Path.GetFileName(filenameChuKy)));
+            //}
+            //else
+            //{
+            //    System.IO.File.Copy(filenameChuKy, System.IO.Path.Combine(tempDir, System.IO.Path.GetFileName(filenameChuKy)), true);
+            //    Console.WriteLine($"copy to desc {filenameChuKy}");
+            //}
+            //filenameChuKy = System.IO.Path.Combine(tempDir, System.IO.Path.GetFileName(filenameChuKy));
         }
 
         // Draw the selection rectangle.

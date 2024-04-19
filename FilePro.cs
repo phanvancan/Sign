@@ -311,7 +311,7 @@ namespace SiginBS
 
         public string CreateMultiplePath(String path)
         {// Lay thu muc  LocalLow
-            //  string  currentForlder = Path.Combine(Environment.GetFolderPathEnvironment.SpecialFolder.ApplicationData), "template");
+            //  string  currentForlder = System.IO.Path.Combine(Environment.GetFolderPathEnvironment.SpecialFolder.ApplicationData), "template");
             //C:\Users\ccanpv\AppData\LocalLow\xmlvb
             //  string folderPath = HttpContext.Current.Server.MapPath(path);
             if(!path.EndsWith("\\"))
@@ -343,7 +343,7 @@ namespace SiginBS
 
         public bool CreateFilePathByDocId(string path)
         {
-            // string path = Path.Combine(Config.ApplicationSetting.Instance.FolderAssetOfCompany, companyId.ToString(), AssetSignInvoice.Release, AssetSignInvoice.TempSignFile, releaseId.ToString());
+            // string path = System.IO.Path.Combine(Config.ApplicationSetting.Instance.FolderAssetOfCompany, companyId.ToString(), AssetSignInvoice.Release, AssetSignInvoice.TempSignFile, releaseId.ToString());
 
             string folderPath = HttpContext.Current.Server.MapPath(path);
             if (!Directory.Exists(folderPath))
@@ -351,7 +351,7 @@ namespace SiginBS
                 Directory.CreateDirectory(folderPath);
             }
             return true;
-            // return Path.Combine(folderPath, fileUploadInfo.FileName);
+            // return System.IO.Path.Combine(folderPath, fileUploadInfo.FileName);
         }
 
 
@@ -374,11 +374,11 @@ namespace SiginBS
         //        string newName = nameWithoutExtension + Characters.Underscore + suffix + extension;
 
         //        string folderPath = fileInfo.DirectoryName;
-        //        string destFile = Path.Combine(folderPath, newName);
+        //        string destFile = System.IO.Path.Combine(folderPath, newName);
 
         //        fileInfo.MoveTo(destFile);
         //        int companyId = GetCompanyIdOfUser();
-        //        string path = Path.Combine(Config.ApplicationSetting.Instance.FolderAssetOfCompany, companyId.ToString(), AssetSignInvoice.Release, AssetSignInvoice.SignFile);
+        //        string path = System.IO.Path.Combine(Config.ApplicationSetting.Instance.FolderAssetOfCompany, companyId.ToString(), AssetSignInvoice.Release, AssetSignInvoice.SignFile);
         //        string tagetFullPath = HttpContext.Current.Server.MapPath(path);
         //        if (!Directory.Exists(tagetFullPath))
         //        {
@@ -421,11 +421,11 @@ namespace SiginBS
         //        string newName = nameWithoutExtension + Characters.Underscore + suffix + extension;
 
         //        string folderPath = fileInfo.DirectoryName;
-        //        string destFile = Path.Combine(folderPath, newName);
+        //        string destFile = System.IO.Path.Combine(folderPath, newName);
 
         //        fileInfo.MoveTo(destFile);
 
-        //        string path = Path.Combine(Config.ApplicationSetting.Instance.FolderAssetOfCompany, companyId.ToString(), AssetSignInvoice.Release, AssetSignInvoice.SignFile);
+        //        string path = System.IO.Path.Combine(Config.ApplicationSetting.Instance.FolderAssetOfCompany, companyId.ToString(), AssetSignInvoice.Release, AssetSignInvoice.SignFile);
         //        string tagetFullPath = HttpContext.Current.Server.MapPath(path);
         //        if (!Directory.Exists(tagetFullPath))
         //        {

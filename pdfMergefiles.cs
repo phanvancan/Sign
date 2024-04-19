@@ -24,7 +24,7 @@ namespace SiginBS
             using (PdfReader reader = new PdfReader(pdfFilePath))
             {
                 Document document = new Document(PageSize.A4);
-                PdfCopy copy = new PdfCopy(document, new FileStream(Path.Combine(outputPath, pdfFileName + ".pdf"), FileMode.Create));
+                PdfCopy copy = new PdfCopy(document, new FileStream(System.IO.Path.Combine(outputPath, pdfFileName + ".pdf"), FileMode.Create));
                 document.Open();
 
                 //try

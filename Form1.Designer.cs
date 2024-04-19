@@ -47,14 +47,16 @@
             this.button5 = new System.Windows.Forms.Button();
             this.listView1 = new System.Windows.Forms.ListView();
             this.button6 = new System.Windows.Forms.Button();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(26, 326);
+            this.button1.Location = new System.Drawing.Point(27, 326);
             this.button1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(335, 88);
+            this.button1.Size = new System.Drawing.Size(335, 89);
             this.button1.TabIndex = 0;
             this.button1.Text = "Open file pdf";
             this.button1.UseVisualStyleBackColor = true;
@@ -67,16 +69,16 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(288, 22);
             this.textBox1.TabIndex = 1;
-            this.textBox1.Text = "120";
+            this.textBox1.Text = "0";
             // 
             // textBox2
             // 
             this.textBox2.Location = new System.Drawing.Point(75, 97);
             this.textBox2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(242, 22);
+            this.textBox2.Size = new System.Drawing.Size(241, 22);
             this.textBox2.TabIndex = 2;
-            this.textBox2.Text = "120";
+            this.textBox2.Text = "0";
             // 
             // label1
             // 
@@ -119,9 +121,9 @@
             this.textBox3.Location = new System.Drawing.Point(75, 132);
             this.textBox3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(242, 22);
+            this.textBox3.Size = new System.Drawing.Size(241, 22);
             this.textBox3.TabIndex = 6;
-            this.textBox3.Text = "120";
+            this.textBox3.Text = "150";
             // 
             // textBox4
             // 
@@ -130,11 +132,11 @@
             this.textBox4.Name = "textBox4";
             this.textBox4.Size = new System.Drawing.Size(288, 22);
             this.textBox4.TabIndex = 5;
-            this.textBox4.Text = "120";
+            this.textBox4.Text = "50";
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(26, 419);
+            this.button2.Location = new System.Drawing.Point(27, 418);
             this.button2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(335, 89);
@@ -150,7 +152,8 @@
             this.txtFile.Name = "txtFile";
             this.txtFile.Size = new System.Drawing.Size(351, 22);
             this.txtFile.TabIndex = 10;
-            this.txtFile.Text = "C:\\Users\\ccanpv\\Documents\\T1RINHDUCTRUNG_thongbaotrungdaugia_14A82589.pdf";
+            this.txtFile.Text = "C:\\Users\\ccanpv\\Documents\\TRANMINHHUNG_thongbaotrungdaugia_51L09797.pdf";
+            this.txtFile.TextChanged += new System.EventHandler(this.txtFile_TextChanged);
             // 
             // button3
             // 
@@ -168,7 +171,7 @@
             this.button4.Location = new System.Drawing.Point(29, 576);
             this.button4.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(334, 60);
+            this.button4.Size = new System.Drawing.Size(333, 60);
             this.button4.TabIndex = 12;
             this.button4.Text = "Kys";
             this.button4.UseVisualStyleBackColor = true;
@@ -176,9 +179,10 @@
             // 
             // panel1
             // 
-            this.panel1.Location = new System.Drawing.Point(722, 12);
+            this.panel1.Location = new System.Drawing.Point(723, 12);
+            this.panel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1142, 989);
+            this.panel1.Size = new System.Drawing.Size(1141, 990);
             this.panel1.TabIndex = 15;
             // 
             // textBox5
@@ -192,7 +196,7 @@
             // 
             // textBox6
             // 
-            this.textBox6.Location = new System.Drawing.Point(75, 227);
+            this.textBox6.Location = new System.Drawing.Point(75, 226);
             this.textBox6.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox6.Name = "textBox6";
             this.textBox6.Size = new System.Drawing.Size(288, 22);
@@ -201,10 +205,10 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(28, 659);
+            this.button5.Location = new System.Drawing.Point(28, 658);
             this.button5.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(334, 60);
+            this.button5.Size = new System.Drawing.Size(333, 60);
             this.button5.TabIndex = 18;
             this.button5.Text = "Open File sign";
             this.button5.UseVisualStyleBackColor = true;
@@ -214,7 +218,8 @@
             // 
             this.listView1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(399, 35);
+            this.listView1.Location = new System.Drawing.Point(399, 34);
+            this.listView1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(269, 965);
             this.listView1.TabIndex = 19;
@@ -224,6 +229,7 @@
             // button6
             // 
             this.button6.Location = new System.Drawing.Point(29, 724);
+            this.button6.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(332, 68);
             this.button6.TabIndex = 20;
@@ -231,11 +237,36 @@
             this.button6.UseVisualStyleBackColor = true;
             this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(-1, 1057);
+            this.progressBar1.Margin = new System.Windows.Forms.Padding(4);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(1604, 59);
+            this.progressBar1.TabIndex = 21;
+            this.progressBar1.Visible = false;
+            this.progressBar1.Click += new System.EventHandler(this.progressBar1_Click);
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.Location = new System.Drawing.Point(31, 282);
+            this.checkBox1.Margin = new System.Windows.Forms.Padding(4);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(87, 20);
+            this.checkBox1.TabIndex = 22;
+            this.checkBox1.Text = "Ký 1 trang";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1994, 1013);
+            this.ClientSize = new System.Drawing.Size(1604, 1116);
+            this.Controls.Add(this.checkBox1);
+            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.button5);
@@ -285,6 +316,8 @@
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }
 

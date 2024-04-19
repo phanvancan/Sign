@@ -15,7 +15,7 @@ namespace SiginBS.Common
         {
             string fname = Path.GetFileName(_fullpath);
             string _dirpath = Path.GetDirectoryName(_fullpath); // .Substring(0, _fullpath.Length - fname.Length);
-            string _destPath = Path.Combine(_dirpath, _thumbDir);
+            string _destPath = System.IO.Path.Combine(_dirpath, _thumbDir);
 
             try
             {

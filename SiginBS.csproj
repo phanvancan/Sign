@@ -77,6 +77,7 @@
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Diagnostics.DiagnosticSource, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Diagnostics.DiagnosticSource.5.0.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
@@ -113,6 +114,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\AppConfig.cs" />
+    <Compile Include="Common\ConfigAttribute.cs" />
+    <Compile Include="Common\PDF_ImgExtraction.cs" />
+    <Compile Include="Common\StringExtensions.cs" />
     <Compile Include="Common\Thumbnails.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="FilePro.cs" />
@@ -122,7 +127,9 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="GlobalData.cs" />
     <Compile Include="Models\filelist.cs" />
+    <Compile Include="Models\ReleaseInfo.cs" />
     <Compile Include="pdfMergefiles.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -166,7 +173,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\iTextPDFImages\iTextPDFImages.csproj">
-      <Project>{cd519287-dad5-4081-94a8-530f00330c9a}</Project>
+      <Project>{CD519287-DAD5-4081-94A8-530F00330C9A}</Project>
       <Name>iTextPDFImages</Name>
     </ProjectReference>
   </ItemGroup>
