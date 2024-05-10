@@ -16,3 +16,9 @@ D:\Adm\SignInvoice\SignInvoice\Custom.Install\obj\Release\CustomInstall.csproj.A
 D:\Adm\SignInvoice\SignInvoice\Custom.Install\obj\Release\CustomInstall.csproj.CoreCompileInputs.cache
 D:\Adm\SignInvoice\SignInvoice\Custom.Install\obj\Release\CustomInstall.dll
 D:\Adm\SignInvoice\SignInvoice\Custom.Install\obj\Release\CustomInstall.pdb
+D:\bk\gtel\ky\Custom.Install\bin\Release\CustomInstall.dll
+D:\bk\gtel\ky\Custom.Install\bin\Release\CustomInstall.pdb
+D:\bk\gtel\ky\Custom.Install\obj\Release\CustomInstall.csproj.AssemblyReference.cache
+D:\bk\gtel\ky\Custom.Install\obj\Release\CustomInstall.csproj.CoreCompileInputs.cache
+D:\bk\gtel\ky\Custom.Install\obj\Release\CustomInstall.dll
+D:\bk\gtel\ky\Custom.Install\obj\Release\CustomInstall.pdb
