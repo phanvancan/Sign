@@ -1,0 +1,15 @@
+D:\Adm\SignInvoice\SignInvoice\itext7.pdfimage\ConvertToImage\bin\Debug\ConvertToImage.exe.config
+D:\Adm\SignInvoice\SignInvoice\itext7.pdfimage\ConvertToImage\bin\Debug\ConvertToImage.exe
+D:\Adm\SignInvoice\SignInvoice\itext7.pdfimage\ConvertToImage\bin\Debug\ConvertToImage.pdb
+D:\Adm\SignInvoice\SignInvoice\itext7.pdfimage\ConvertToImage\bin\Debug\itext.pdfimage.dll
+D:\Adm\SignInvoice\SignInvoice\itext7.pdfimage\ConvertToImage\bin\Debug\itext.kernel.dll
+D:\Adm\SignInvoice\SignInvoice\itext7.pdfimage\ConvertToImage\bin\Debug\itext.io.dll
+D:\Adm\SignInvoice\SignInvoice\itext7.pdfimage\ConvertToImage\bin\Debug\BouncyCastle.Crypto.dll
+D:\Adm\SignInvoice\SignInvoice\itext7.pdfimage\ConvertToImage\bin\Debug\Common.Logging.Core.dll
+D:\Adm\SignInvoice\SignInvoice\itext7.pdfimage\ConvertToImage\bin\Debug\Common.Logging.dll
+D:\Adm\SignInvoice\SignInvoice\itext7.pdfimage\ConvertToImage\bin\Debug\itext.pdfimage.pdb
+D:\Adm\SignInvoice\SignInvoice\itext7.pdfimage\ConvertToImage\obj\Debug\ConvertToImage.csproj.AssemblyReference.cache
+D:\Adm\SignInvoice\SignInvoice\itext7.pdfimage\ConvertToImage\obj\Debug\ConvertToImage.csproj.CoreCompileInputs.cache
+D:\Adm\SignInvoice\SignInvoice\itext7.pdfimage\ConvertToImage\obj\Debug\ConvertToImage.csproj.CopyComplete
+D:\Adm\SignInvoice\SignInvoice\itext7.pdfimage\ConvertToImage\obj\Debug\ConvertToImage.exe
+D:\Adm\SignInvoice\SignInvoice\itext7.pdfimage\ConvertToImage\obj\Debug\ConvertToImage.pdb

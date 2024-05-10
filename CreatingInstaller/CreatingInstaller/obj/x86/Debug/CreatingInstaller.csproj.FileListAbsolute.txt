@@ -1,0 +1,9 @@
+D:\Adm\SignInvoice\SignInvoice\CreatingInstaller\CreatingInstaller\obj\x86\Debug\CreatingInstaller.csproj.AssemblyReference.cache
+D:\Adm\SignInvoice\SignInvoice\CreatingInstaller\CreatingInstaller\bin\Debug\CreatingInstaller.exe.config
+D:\Adm\SignInvoice\SignInvoice\CreatingInstaller\CreatingInstaller\bin\Debug\CreatingInstaller.exe
+D:\Adm\SignInvoice\SignInvoice\CreatingInstaller\CreatingInstaller\bin\Debug\CreatingInstaller.pdb
+D:\Adm\SignInvoice\SignInvoice\CreatingInstaller\CreatingInstaller\obj\x86\Debug\CreatingInstaller.Properties.Resources.resources
+D:\Adm\SignInvoice\SignInvoice\CreatingInstaller\CreatingInstaller\obj\x86\Debug\CreatingInstaller.csproj.GenerateResource.cache
+D:\Adm\SignInvoice\SignInvoice\CreatingInstaller\CreatingInstaller\obj\x86\Debug\CreatingInstaller.csproj.CoreCompileInputs.cache
+D:\Adm\SignInvoice\SignInvoice\CreatingInstaller\CreatingInstaller\obj\x86\Debug\CreatingInstaller.exe
+D:\Adm\SignInvoice\SignInvoice\CreatingInstaller\CreatingInstaller\obj\x86\Debug\CreatingInstaller.pdb

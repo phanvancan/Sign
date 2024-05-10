@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net46</TargetFrameworks>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>ThomSoft.itext7.pdfimage</PackageId>
+    <Version>1.0.2</Version>
+    <Authors>Thom Brink</Authors>
+    <Company>Thom Brink</Company>
+    <RepositoryUrl>https://github.com/thombrink/itext7.pdfimage</RepositoryUrl>
+    <Description>pdfimage is an extension to itext7, which can convert PDF pages to images</Description>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <!-- Need to conditionally bring in references for the .NET Framework 4.5 target -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
+    <Reference Include="System.Drawing" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="itext7" Version="7.1.9" />
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="System.Drawing.Common">
+      <Version>8.0.4</Version>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>

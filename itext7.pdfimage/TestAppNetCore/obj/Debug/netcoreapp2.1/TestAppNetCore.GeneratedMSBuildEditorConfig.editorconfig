@@ -1,0 +1,5 @@
+is_global = true
+build_property.RootNamespace = TestAppNetCore
+build_property.ProjectDir = C:\temp\itext7.pdfimage\TestAppNetCore\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 

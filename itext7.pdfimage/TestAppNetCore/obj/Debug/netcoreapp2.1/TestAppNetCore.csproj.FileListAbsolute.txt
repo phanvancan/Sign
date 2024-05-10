@@ -1,0 +1,17 @@
+C:\temp\itext7.pdfimage\TestAppNetCore\bin\Debug\netcoreapp2.1\TestAppNetCore.deps.json
+C:\temp\itext7.pdfimage\TestAppNetCore\bin\Debug\netcoreapp2.1\TestAppNetCore.runtimeconfig.json
+C:\temp\itext7.pdfimage\TestAppNetCore\bin\Debug\netcoreapp2.1\TestAppNetCore.runtimeconfig.dev.json
+C:\temp\itext7.pdfimage\TestAppNetCore\bin\Debug\netcoreapp2.1\TestAppNetCore.dll
+C:\temp\itext7.pdfimage\TestAppNetCore\bin\Debug\netcoreapp2.1\TestAppNetCore.pdb
+C:\temp\itext7.pdfimage\TestAppNetCore\bin\Debug\netcoreapp2.1\itext.pdfimage.dll
+C:\temp\itext7.pdfimage\TestAppNetCore\bin\Debug\netcoreapp2.1\itext.pdfimage.pdb
+C:\temp\itext7.pdfimage\TestAppNetCore\obj\Debug\netcoreapp2.1\TestAppNetCore.csproj.AssemblyReference.cache
+C:\temp\itext7.pdfimage\TestAppNetCore\obj\Debug\netcoreapp2.1\TestAppNetCore.GeneratedMSBuildEditorConfig.editorconfig
+C:\temp\itext7.pdfimage\TestAppNetCore\obj\Debug\netcoreapp2.1\TestAppNetCore.AssemblyInfoInputs.cache
+C:\temp\itext7.pdfimage\TestAppNetCore\obj\Debug\netcoreapp2.1\TestAppNetCore.AssemblyInfo.cs
+C:\temp\itext7.pdfimage\TestAppNetCore\obj\Debug\netcoreapp2.1\TestAppNetCore.csproj.CoreCompileInputs.cache
+C:\temp\itext7.pdfimage\TestAppNetCore\obj\Debug\netcoreapp2.1\TestAppNetCore.sourcelink.json
+C:\temp\itext7.pdfimage\TestAppNetCore\obj\Debug\netcoreapp2.1\TestAppNetCore.csproj.CopyComplete
+C:\temp\itext7.pdfimage\TestAppNetCore\obj\Debug\netcoreapp2.1\TestAppNetCore.dll
+C:\temp\itext7.pdfimage\TestAppNetCore\obj\Debug\netcoreapp2.1\TestAppNetCore.pdb
+C:\temp\itext7.pdfimage\TestAppNetCore\obj\Debug\netcoreapp2.1\TestAppNetCore.genruntimeconfig.cache
